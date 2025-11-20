@@ -275,6 +275,18 @@
       font-size: 0.95rem;
       -webkit-overflow-scrolling: touch; /* Agrega esta línea */
     }
+    /* Permitir scroll dentro del formulario en teléfonos */
+#formModal {
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch !important;
+}
+
+#formModal .modal {
+  max-height: 95vh !important;
+  overflow-y: auto !important;
+  -webkit-overflow-scrolling: touch !important;
+}
+
   </style>
 </head>
 <body>
