@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>SafeCampus – Convivencia sin miedo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body {
+      background: #e6f4ea;
+      color: #1e293b;
+      line-height: 1.6;
+    }
+
+    header {
+      background: url('img/campus-pascual-bravo-investigacion-1024x576.jpg') center center/cover no-repeat;
+      color: #fff;
+      padding: 2.8rem 1.6rem;
+      text-align: center;
+      box-shadow: 0 4px 15px rgba(59,122,87,0.15);
+    }
+
+    header h1 {
+      font-size: 2.5rem;
+      letter-spacing: 1px;
+      margin-bottom: 0.5rem;
+      text-transform: uppercase;
+    }
+
+    main {
+      max-width: 1100px;
+      margin: 2rem auto 3rem;
+      padding: 0 1rem;
+    }
+
+    .tagline {
+      text-align: center;
+      font-weight: 700;
+      color: #3b7a57;
+      margin-bottom: 2rem;
+      font-size: 1.2rem;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .card {
+      background: #ffffff;
+      border-radius: 1rem;
+      padding: 1.5rem;
+      box-shadow: 0 12px 30px rgba(59,122,87,0.07);
+      border: 1px solid #cbd5e1;
+      transition: transform 0.2s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+    }
+
+    .card h2 {
+      color: #3b7a57;
+    }
+
+    .pill {
+      background: #d1fae5;
+      color: #3b7a57;
+    }
+
+    .help-section {
+      text-align: center;
+      margin-top: 2.5rem;
+    }
+
+    .help-button-wrapper {
+      margin-top: 1.2rem;
+      display: inline-block;
+      background: linear-gradient(135deg, #dc2626, #f59e0b);
+      padding: 1rem 1.5rem;
+      color: #fff;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 10px 25px rgba(220, 38, 38, 0.4);
+      transition: transform 0.2s ease;
+      font-size: 1.1rem;
+    }
+
+    .help-button-wrapper:hover {
+      transform: translateY(-3px) scale(1.03);
+    }
+
+    .help-button-wrapper img:hover {
+      box-shadow: 0 8px 32px rgba(220,38,38,0.25);
+      transform: scale(1.07);
+    }
+
+    /* Modal base */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.7);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      z-index: 50;
+    }
+
+    .modal {
+      background: #fff;
+      border-radius: 1rem;
+      max-width: 480px;
+      width: 100%;
+      padding: 1.5rem 1.7rem;
+      box-shadow: 0 20px 60px rgba(15, 23, 42, 0.35);
+      position: relative;
+      animation: fadeIn 0.3s ease;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 0.8rem;
+      right: 0.9rem;
+      border: none;
+      background: transparent;
+      font-size: 1.3rem;
+      cursor: pointer;
+      color: #64748b;
+    }
+
+    /* Nueva sección: Clasificación */
+    .severity-options {
+      margin: 1rem 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+    }
+
+    .severity-btn {
+      padding: 0.9rem;
+      border-radius: 0.7rem;
+      font-weight: 700;
+      cursor: pointer;
+      border: none;
+      font-size: 1rem;
+      transition: transform .15s ease;
+      color: #fff;
+    }
+
+    .severity-btn:hover {
+      transform: scale(1.03);
+    }
+
+    .sev-low { background: #16a34a; }
+    .sev-mid { background: #f59e0b; }
+    .sev-high { background: #dc2626; }
+
+    .contact-box {
+      background: #f9fafb;
+      border-radius: 0.8rem;
+      padding: 0.7rem 0.9rem;
+      border: 1px dashed #cbd5f5;
+      font-size: 0.9rem;
+      margin-top: 1rem;
+    }
+
+    /* Nueva clase para alerta especial */
+    .especial-alerta {
+      background: linear-gradient(135deg, #dc2626 70%, #b91c1c 100%);
+      border: 2px solid #b91c1c;
+      animation: parpadeo 1s infinite alternate;
+      box-shadow: 0 0 16px 2px #dc2626;
+    }
+
+    @keyframes parpadeo {
+      from { box-shadow: 0 0 16px 2px #dc2626; }
+      to { box-shadow: 0 0 32px 8px #dc2626; }
+    }
+
+    /* Bocadillo de apoyo moral */
+    #bocadilloApoyo {
+      background: #fff;
+      color: #3b7a57;
+      border-radius: 1rem;
+      box-shadow: 0 4px 16px rgba(59,122,87,0.12);
+      padding: 1rem 1.3rem;
+      font-size: 1.1rem;
+      font-weight: 700;
+      max-width: 220px;
+      border: 2px solid #d1fae5;
+      opacity: 1;
+      transition: opacity 0.7s;
+    }
+
+    /* Apartado de policía (excepto botón) */
+    #alertaPolicia {
+      background: #fee2e2;
+      color: #3b7a57;
+      border-radius: 1rem;
+      font-weight: 700;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      border: 2px solid #3b7a57;
+    }
+
+    /* Emoji de emoción */
+    #emocionLabel {
+      color: #3b7a57;
+      font-weight: 700;
+      margin-bottom: 1rem;
+    }
+
+    /* Formulario campos y etiquetas */
+    .modal input,
+    .modal textarea,
+    .modal select {
+      border: 1px solid #3b7a57; /* Cambiado de rojo a verde claro */
+      border-radius: 0.7rem;
+      padding: 0.7rem;
+      font-size: 1rem;
+      background: #fff;
+      color: #1e293b;
+    }
+
+    /* Select en el formulario (si tienes estilos en línea, cámbialos también) */
+    select,
+    input,
+    textarea {
+      border: 1px solid #3b7a57 !important;
+    }
+
+    /* Mapa del campus interactivo local */
+    div[style*="border:2px solid #dc2626"] {
+      border: 2px solid #3b7a57 !important;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>SafeCampus</h1>
+    <p id="typingText"> </p>
+  </header>
+
+  <main>
+    <p class="tagline">Respeto · Empatía · Igualdad · Acompañamiento</p>
+
+    <!-- Tarjetas informativas -->
+    <section class="grid">
+      <article class="card">
+        <span class="pill">NUESTRA MISIÓN</span>
+        <h2>Un campus donde nadie tenga que sentir miedo</h2>
+        <p>Promover una cultura de respeto, empatía e igualdad, donde cada integrante de la comunidad se sienta seguro, valorado y escuchado. SafeCampus busca prevenir y erradicar el acoso y el bullying mediante educación, acompañamiento y herramientas de denuncia confiables</p>
+      </article>
+
+      <article class="card">
+        <span class="pill">NUESTRA VISIÓN</span>
+        <h2>Convivencia segura para todos</h2>
+        <p>Soñamos con un Pascual Bravo donde el respeto y la empatía sean parte de la vida diaria. Un lugar en el que el acoso no tenga espacio y las diferencias se reconozcan como una fortaleza, construyendo relaciones basadas en la confianza, la igualdad y el apoyo mutuo.</p>
+      </article>
+
+      <article class="card">
+        <span class="pill">¿QUÉ ES SAFECAMPUS?</span>
+        <h2>Apoyo integral</h2>
+        <p> -Vigilancia y protocolos de seguridad claros.</p>
+        <p> -Espacios físicos y digitales para pedir ayuda.</p>
+        <h2>Canales de apoyo y denuncia</h2>
+        <p> -Orientación psicológica, jurídica y pedagógica.</p>
+        <p>-Denuncias confidenciales y acompañamiento continuo.</p>
+
+      </article>
+
+      <article class="card">
+        <span class="pill">¿POR QUE EXISTE?</span>
+        <h2>Responder al acoso y bullying</h2>
+        <p>El acoso sexual, el hostigamiento y el bullying afectan la salud mental, el rendimiento académico y la vida personal. Muchas personas no denuncian por miedo o por no saber a dónde acudir. SafeCampus nace como una respuesta activa para cerrar esa brecha de seguridad y apoyo.
+</p>
+      </article>
+    </section>
+
+    <!-- Botón principal de ayuda -->
+    <section class="help-section" style="position:relative;">
+      <h2>¿Has vivido acoso sexual o bullying?</h2>
+      <p>No estás solo ni sola. Si algo te incomoda, te hace daño o no sabes cómo manejarlo, da el primer paso: <strong>pide ayuda</strong>. Haz clic en el botón para ver las rutas de atención.</p>
+      
+      <!-- Botón de ayuda centrado -->
+      <div style="display:flex; justify-content:center; align-items:center; gap:2rem; flex-wrap:wrap;">
+        <div class="help-button-wrapper" id="openHelp" style="background:none; box-shadow:none; border:none; padding:0; display:inline-block; cursor:pointer;">
+          <img src="img/WhatsApp Image 2025-11-19 at 20.47.23.jpeg"
+               alt="Pedir ayuda"
+               style="width:260px; height:160px; object-fit:cover; border-radius:2rem; box-shadow:0 10px 32px rgba(220,38,38,0.25); border:4px solid #dc2626; cursor:pointer;">
+        </div>
+      </div>
+
+      <!-- Personaje de apoyo moral en la esquina inferior derecha -->
+      <div id="apoyoPersonaje" style="position:fixed; bottom:18px; right:18px; text-align:center; z-index:100; display:none;">
+        <img src="img/6889361.png"
+             alt="Estudiante de apoyo moral"
+             style="width:110px; height:110px; object-fit:contain;">
+        <div id="bocadilloApoyo" style="position:absolute; right:120px; bottom:30px; background:#fff; color:#3b7a57; border-radius:1rem; box-shadow:0 4px 16px rgba(220,38,38,0.12); padding:1rem 1.3rem; font-size:1.1rem; font-weight:700; max-width:220px; border:2px solid #d1fae5; opacity:1; transition:opacity 0.7s;">
+          ¡Recuerda que eres valiente por pedir ayuda!
+        </div>
+      </div>
+    </section>
+
+    <p id="alertaPolicia" style="display:none; background:#fee2e2; color:#b91c1c; border-radius:1rem; font-weight:700; padding:1rem; margin-bottom:1rem; border:2px solid #dc2626;">
+      <span style="font-size:1.5em; margin-right:0.5em;">🚨</span>
+      <span>¿Estás en peligro? <br>
+      <button id="llamarPolicia" style="background:#dc2626; color:#fff; font-weight:700; border:none; border-radius:0.7rem; padding:0.7rem 1.2rem; cursor:pointer; margin-top:0.7rem;">Llamar a la policía</button>
+      <br>
+      <span id="ubicacionActual" style="display:block; margin-top:0.7rem; font-size:0.95em;"></span>
+      </span>
+    </p>
+  </main>
+
+  <!-- MODAL PRINCIPAL -->
+  <div class="modal-backdrop" id="helpModal">
+    <div class="modal">
+      <button class="close-btn" id="closeHelp">&times;</button>
+      <h3>Clasifica tu situación</h3>
+      <p>Selecciona la categoría que más se ajuste a lo que estás viviendo.</p>
+
+      <div class="severity-options">
+        <button class="severity-btn sev-low">Manejable – Necesito orientación</button>
+        <button class="severity-btn sev-mid">Grave – He vivido acoso o bullying constante</button>
+        <button class="severity-btn sev-high especial-alerta">
+          <span style="font-size:1.3em; margin-right:0.5em;">⚠️</span>
+          Gravisimo–estoy en peligro necesito ayuda inmediata
+        </button>
+      </div>
+
+      <div class="contact-box">
+        <strong>Contacto institucional:</strong><br>
+        📧 convivenciasinmiedo@pascualbravo.edu.co<br>
+        ☎️ Línea de atención: (000) 000 00 00<br>
+        🕒 Lunes a viernes, 6:00 a.m. – 8:00 p.m.
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL FORMULARIO DETALLADO -->
+  <div class="modal-backdrop" id="formModal" style="display:none;">
+    <div class="modal">
+      <button class="close-btn" id="closeForm">&times;</button>
+      <div style="text-align:center; font-size:2.5rem; margin-bottom:1rem;">🧸</div>
+      <h3>Cuéntanos tu situación</h3>
+      <p id="selectedLevelText" style="font-weight:700; margin-bottom:1rem;"></p>
+      <p id="mensajeApoyo" style="color:#dc2626;font-weight:700;margin-bottom:1rem;"></p>
+      <form id="helpForm">
+        <label for="ubicacion">¿Dónde estás ubicado/a en el campus?</label>
+        <select id="ubicacion" style="width:100%;margin-bottom:1rem;border-radius:0.7rem;border:1px solid #dc2626;padding:0.7rem;font-size:1rem;">
+          <option value="">Selecciona una opción</option>
+          <option value="Biblioteca">Biblioteca</option>
+          <option value="Cafetería">Cafetería</option>
+          <option value="Aulas">Aulas</option>
+          <option value="Patio central">Patio central</option>
+          <option value="Administración">Administración</option>
+          <option value="Otro">Otro</option>
+        </select>
+
+        <!-- Mapa del campus interactivo local -->
+        <div style="width:100%;height:220px; margin-bottom:1rem; border-radius:1rem; overflow:hidden; border:2px solid #dc2626; position:relative;">
+          <img
+            src="img/mapa-campus-universitario.gif"
+            alt="Mapa Campus Pascual Bravo"
+            id="mapaCampus"
+            style="width:100%;height:220px;object-fit:contain;cursor:crosshair;display:block;">
+          <div id="puntoUbicacion" style="display:none; position:absolute; width:22px; height:22px; background:#dc2626; border-radius:50%; border:2px solid #fff; box-shadow:0 2px 8px rgba(220,38,38,0.18); pointer-events:none;"></div>
+        </div>
+        <input type="hidden" id="ubicacionMapa" name="ubicacionMapa" />
+
+        <label for="emocion">¿Cómo te sientes ahora?</label>
+        <input type="range" id="emocion" min="1" max="5" step="1"
+          style="width:100%;margin-bottom:1rem;">
+        <div id="emocionLabel" style="margin-bottom:1rem;color:#dc2626;font-weight:700;">😐</div>
+
+        <label for="nameField">Nombre (opcional)</label>
+        <input id="nameField" type="text" style="width:100%;margin-bottom:1rem;border-radius:0.7rem;border:1px solid #dc2626;padding:0.7rem;font-size:1rem;" />
+
+        <label for="descField">Describe lo que estás viviendo</label>
+        <textarea id="descField" required style="width:100%;margin-bottom:1rem;border-radius:0.7rem;border:1px solid #dc2626;padding:0.7rem;font-size:1rem;"></textarea>
+
+        <label style="display:flex; align-items:center; gap:0.5rem; margin-bottom:1rem;">
+          <input id="anonCheckbox" type="checkbox" /> Quiero enviar esto de forma anónima
+        </label>
+
+        <button type="submit" style="background:linear-gradient(135deg,#dc2626,#b91c1c);color:#fff;font-weight:700;border:none;border-radius:0.7rem;padding:0.7rem 1.2rem;cursor:pointer;">Enviar</button>
+      </form>
+    </div>
+  </div>
+
+  <div id="helpMsg" style="display:none; position:fixed; top:30%; left:50%; transform:translate(-50%,-50%); background:linear-gradient(135deg,#dc2626,#b91c1c);color:#fff;padding:2rem 2.5rem;border-radius:1.2rem;font-size:1.5rem;font-weight:800;box-shadow:0 8px 32px rgba(220,38,38,0.18);z-index:1000;text-align:center;">¡Ya va la ayuda en camino!</div>
+
+  <footer style="text-align:center; padding:2rem 0; font-size:0.9rem; color:#3b7a57;">
+    SafeCampus · Convivencia sin miedo · Universidad Pascual Bravo
+  </footer>
+
+  <script>
+    const openHelp = document.getElementById("openHelp");
+    const helpModal = document.getElementById("helpModal");
+    const closeHelp = document.getElementById("closeHelp");
+    const severityButtons = document.querySelectorAll('.severity-btn');
+    const formModal = document.getElementById('formModal');
+    const closeForm = document.getElementById("closeForm");
+    const selectedLevelText = document.getElementById('selectedLevelText');
+    const helpForm = document.getElementById('helpForm');
+    const helpMsg = document.getElementById('helpMsg');
+    const alertaPolicia = document.getElementById('alertaPolicia');
+    const llamarPolicia = document.getElementById('llamarPolicia');
+    const ubicacionActual = document.getElementById('ubicacionActual');
+
+    openHelp.addEventListener("click", () => helpModal.style.display = "flex");
+    closeHelp.addEventListener("click", () => helpModal.style.display = "none");
+
+    helpModal.addEventListener("click", (e) => {
+      if (e.target === helpModal) helpModal.style.display = "none";
+    });
+
+    // Al elegir nivel -> abrir formulario
+    const mensajesApoyo = [
+      "Recuerda: no estás solo/a, estamos contigo.",
+      "Tu bienestar es lo más importante.",
+      "Hablar es el primer paso para recibir ayuda.",
+      "Eres valiente por buscar apoyo.",
+      "Aquí te escuchamos y te acompañamos."
+    ];
+
+    severityButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const level = btn.textContent;
+        selectedLevelText.textContent = `Nivel seleccionado: ${level}`;
+        document.getElementById('mensajeApoyo').textContent =
+          mensajesApoyo[Math.floor(Math.random() * mensajesApoyo.length)];
+        helpModal.style.display = 'none';
+        formModal.style.display = 'flex';
+
+        // Mostrar el apartado solo si es gravísimo
+        if (btn.classList.contains('especial-alerta')) {
+          alertaPolicia.style.display = 'block';
+          // Obtener ubicación en tiempo real
+          if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function(position) {
+              ubicacionActual.textContent = `Tu ubicación actual: Latitud ${position.coords.latitude}, Longitud ${position.coords.longitude}`;
+            }, function() {
+              ubicacionActual.textContent = ""; // <-- Aquí se elimina el mensaje de error
+            });
+          } else {
+            ubicacionActual.textContent = ""; // <-- Aquí también se elimina el mensaje de error
+          }
+        } else {
+          alertaPolicia.style.display = 'none';
+          ubicacionActual.textContent = '';
+        }
+      });
+    });
+
+    closeForm.addEventListener('click', () => formModal.style.display = 'none');
+
+    formModal.addEventListener("click", (e) => {
+      if (e.target === formModal) formModal.style.display = "none";
+    });
+
+    // Enviar formulario -> mostrar mensaje de ayuda en camino
+    helpForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      formModal.style.display = 'none';
+      helpMsg.style.display = 'block';
+      helpForm.reset();
+      setTimeout(() => {
+        helpMsg.style.display = 'none';
+      }, 3500);
+    });
+
+    // Animación de texto tipo máquina de escribir
+    const typingTarget = document.getElementById("typingText");
+    const fullText = "Un espacio seguro para acompañarte, escucharte y ayudarte frente al acoso y el bullying en la Universidad Pascual Bravo.";
+    let index = 0;
+
+    function typeEffect() {
+      if (index < fullText.length) {
+        typingTarget.textContent += fullText.charAt(index);
+        index++;
+        setTimeout(typeEffect, 35);
+      }
+    }
+
+    typeEffect();
+
+    const emocionInput = document.getElementById('emocion');
+    const emocionLabel = document.getElementById('emocionLabel');
+    if (emocionInput) {
+      emocionInput.addEventListener('input', function() {
+        const emojis = ["😢", "😟", "😐", "🙂", "😃"];
+        emocionLabel.textContent = emojis[this.value - 1];
+      });
+    }
+
+    const apoyoPersonaje = document.getElementById('apoyoPersonaje');
+    const bocadilloApoyo = document.getElementById('bocadilloApoyo');
+
+    // Mostrar personaje y bocadillo al cargar la página y ocultar después de 4 segundos con transición suave
+    if (apoyoPersonaje && bocadilloApoyo) {
+      apoyoPersonaje.style.display = 'block';
+      bocadilloApoyo.style.opacity = '1';
+      setTimeout(() => {
+        bocadilloApoyo.style.opacity = '0';
+        setTimeout(() => {
+          apoyoPersonaje.style.display = 'none';
+        }, 700); // espera a que termine la transición
+      }, 4000);
+    }
+
+    // Simulación de llamada a la policía
+    if (llamarPolicia) {
+      llamarPolicia.onclick = function() {
+        alert("¡Llamando a la policía! Mantente seguro/a y espera ayuda.");
+        ubicacionActual.textContent = ""; // Oculta el texto de ubicación
+        // Aquí podrías integrar una acción real si la app lo permite
+      };
+    }
+
+    // Mapa interactivo - ubicación del usuario
+    const mapaCampus = document.getElementById('mapaCampus');
+    const puntoUbicacion = document.getElementById('puntoUbicacion');
+    const ubicacionMapa = document.getElementById('ubicacionMapa');
+
+    if (mapaCampus && puntoUbicacion && ubicacionMapa) {
+      mapaCampus.addEventListener('click', function(e) {
+        const rect = mapaCampus.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        puntoUbicacion.style.left = (x - 11) + 'px';
+        puntoUbicacion.style.top = (y - 11) + 'px';
+        puntoUbicacion.style.display = 'block';
+        ubicacionMapa.value = `x:${Math.round(x)}, y:${Math.round(y)}`;
+      });
+    }
+  </script>
+
+</body>
+</html>
+
