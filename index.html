@@ -116,14 +116,30 @@
     }
 
     .modal {
+      max-width: 340px; /* Más pequeño para móvil */
+      width: 100%;
+      padding: 1.2rem 1rem;
       background: #fff;
       border-radius: 1rem;
-      max-width: 480px;
-      width: 100%;
-      padding: 1.5rem 1.7rem;
       box-shadow: 0 20px 60px rgba(15, 23, 42, 0.35);
       position: relative;
       animation: fadeIn 0.3s ease;
+    }
+
+    @media (max-width: 480px) {
+      .modal {
+        max-width: 98vw;
+        min-height: 90vh;
+        border-radius: 0.7rem;
+        padding: 1rem 0.5rem;
+      }
+    }
+
+    @media (min-width: 600px) {
+      .modal {
+        max-width: 420px; /* Un poco más grande en PC */
+        padding: 1.5rem 1.7rem;
+      }
     }
 
     @keyframes fadeIn {
@@ -246,6 +262,18 @@
     /* Mapa del campus interactivo local */
     div[style*="border:2px solid #dc2626"] {
       border: 2px solid #3b7a57 !important;
+    }
+
+    #chatApoyo {
+      height: 90px; /* Más pequeño para que quepa todo */
+      overflow-y: auto;
+      background: #f9fafb;
+      border-radius: 0.8rem;
+      border: 1px dashed #cbd5e1;
+      padding: 0.7rem 0.9rem;
+      margin-bottom: 1rem;
+      font-size: 0.95rem;
+      -webkit-overflow-scrolling: touch; /* Agrega esta línea */
     }
   </style>
 </head>
@@ -398,6 +426,13 @@
           <input id="anonCheckbox" type="checkbox" /> Quiero enviar esto de forma anónima
         </label>
 
+        <!-- Chat de apoyo en el formulario -->
+        <div id="chatApoyo" style="height:90px; overflow-y:auto; background:#f9fafb; border-radius:0.8rem; border:1px dashed #cbd5e1; padding:0.7rem 0.9rem; margin-bottom:1rem; font-size:0.95rem;">
+          <div><strong>Apoyo:</strong> Hola, ¿cómo te podemos ayudar hoy?</div>
+        </div>
+        <input id="chatInput" type="text" placeholder="Escribe tu mensaje..." style="width:100%;margin-bottom:1rem;border-radius:0.7rem;border:1px solid #3b7a57;padding:0.7rem;font-size:1rem;" />
+        <button type="button" id="enviarChat" style="background:#3b7a57;color:#fff;font-weight:700;border:none;border-radius:0.7rem;padding:0.7rem 1.2rem;cursor:pointer;margin-bottom:1rem;">Enviar mensaje</button>
+
         <button type="submit" style="background:linear-gradient(135deg,#dc2626,#b91c1c);color:#fff;font-weight:700;border:none;border-radius:0.7rem;padding:0.7rem 1.2rem;cursor:pointer;">Enviar</button>
       </form>
     </div>
@@ -547,6 +582,31 @@
         puntoUbicacion.style.top = (y - 11) + 'px';
         puntoUbicacion.style.display = 'block';
         ubicacionMapa.value = `x:${Math.round(x)}, y:${Math.round(y)}`;
+      });
+    }
+
+    // Chat de apoyo en el formulario
+    const chatApoyo = document.getElementById('chatApoyo');
+    const chatInput = document.getElementById('chatInput');
+    const enviarChat = document.getElementById('enviarChat');
+
+    if (chatApoyo && chatInput && enviarChat) {
+      enviarChat.addEventListener('click', () => {
+        const mensaje = chatInput.value.trim();
+        if (mensaje) {
+          const nuevoMsg = document.createElement('div');
+          nuevoMsg.innerHTML = `<strong>Tú:</strong> ${mensaje}`;
+          chatApoyo.appendChild(nuevoMsg);
+          chatApoyo.scrollTop = chatApoyo.scrollHeight;
+          chatInput.value = '';
+          // Simulación de respuesta automática
+          setTimeout(() => {
+            const respuesta = document.createElement('div');
+            respuesta.innerHTML = `<strong>Apoyo:</strong> Gracias por compartir, estamos aquí para ayudarte.`;
+            chatApoyo.appendChild(respuesta);
+            chatApoyo.scrollTop = chatApoyo.scrollHeight;
+          }, 1200);
+        }
       });
     }
   </script>
